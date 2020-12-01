@@ -1,3 +1,3 @@
 # Three JS Assignment
  
-![Assignment Image](Image/Image of Creation.png)
+![Assignment Image](Images/Image of Creation.png)
