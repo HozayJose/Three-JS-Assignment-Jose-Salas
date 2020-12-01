@@ -1,3 +1,3 @@
 # Three JS Assignment
  
-![Assignment Image](Images/Image_of_Creation.png)
+![Assignment Image](Images/Ring.png)
