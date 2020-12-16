@@ -35,6 +35,20 @@
       // we can define how the camera can be moved
     const controls = new OrbitControls(camera, renderer.domElement);
 
+    //Ray Casting
+    const raycaster = new THREE.Raycaster();
+    const mouse = new THREE.Vector2();
+
+    function onMouseMove( event ) {
+
+	    // calculate mouse position in normalized device coordinates
+	    // (-1 to +1) for both components
+
+	    mouse.x = ( event.clientX / window.innerWidth ) * 2 - 1;
+	    mouse.y = - ( event.clientY / window.innerHeight ) * 2 + 1;
+
+    }
+
       //Ring Meshes
     const r = 0.6;
     const tube = 0.1;
@@ -56,7 +70,7 @@
       torus.position.set(start_pos, 0, 0);
       start_pos += 2.5;
       //torus.rotation.y += 0.02;
-      console.log(torus)
+      //console.log(torus)
     }
     
       //Lights
@@ -67,8 +81,58 @@
     const ambientLight = new THREE.AmbientLight( 0x202020 ); // soft white light
     scene.add( ambientLight );
       
+    //Adding Ring SFX
+    let music_playing = false;
+	  function music(){
+	    if (!music_playing){
+		   music_playing = true;
+		    // adding an audio listerner to the camera
+	      const listener = new THREE.AudioListener();
+	      camera.add( listener );
 
-    function animate() {
+	      // create a global audio source
+	      const sound = new THREE.Audio( listener );
+
+	      // load a sound and set it as the Audio object's buffer
+	      const audioLoader = new THREE.AudioLoader();
+	      audioLoader.load( 'SonicRingSound.mp3', function( buffer ) {
+		      sound.setBuffer( buffer );
+		      sound.setLoop( false );
+		      sound.setVolume( 0.5 );
+		      sound.play();
+	      });
+	    }
+    }
+  
+	  //document.getElementsByTagName("canvas")[0].onclick = music
+
+    //Rendering and Animation
+    function render() {
+
+    // update the picking ray with the camera and mouse position
+    raycaster.setFromCamera( mouse, camera );
+
+    // calculate objects intersecting the picking ray
+    const intersects = raycaster.intersectObjects( scene.children );
+
+    for ( let i = 0; i < intersects.length; i ++ ) {
+
+      intersects[ i ].object.rotation.y += 0.5;
+
+    }
+      //Rings Normal Spin
+    requestAnimationFrame( render ); 
+      
+      scene.traverse(function(torus) {
+        if (torus.name === "ring") {
+          torus.rotation.y += 0.02;
+        }
+      });
+
+    renderer.render( scene, camera );
+
+    }
+    /*function animate() {
 			requestAnimationFrame( animate ); 
       
       scene.traverse(function(torus) {
@@ -79,12 +143,13 @@
       });
         //tells the GPU to render your meshes to the canvas fromm the perspective of the camera
 			renderer.render( scene, camera );
-    };
+    };*/
     
-    animate();
+    //render();
 
-      
-      
+    window.addEventListener( 'mousemove', onMouseMove, false );
+
+    window.requestAnimationFrame(render);
       
 	</script>
 	</body>
