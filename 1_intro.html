@@ -10,91 +10,79 @@
     <div id="info">This is a Ring</div>
 
 
-   <script type="module">
+  <script type="module">
+    import * as THREE from './js/build/three.module.js'
+    import { OrbitControls } from './js/examples/jsm/controls/OrbitControls.js' 
 
-      import * as THREE from './js/build/three.module.js'
-      import { OrbitControls } from './js/examples/jsm/controls/OrbitControls.js' 
-
-      //first create a "world" or "scene" to hold the data you will render to the screen (where the data is 3D geometry)      
-      const scene = new THREE.Scene();
+    //first create a "world" or "scene" to hold the data you will render to the screen (where the data is 3D geometry)      
+    const scene = new THREE.Scene();
       
-      //define a camera to look into the 3D world
-			const camera = new THREE.PerspectiveCamera( 75, window.innerWidth / window.innerHeight, 0.1, 1000 );
-
-      // create an AudioListener and add it to the camera
-      const listener = new THREE.AudioListener();
-      camera.add( listener );
-
-      // create a global audio source
-      const sound = new THREE.Audio( listener );
-
-      scene.add(sound);
-
-      // load a sound and set it as the Audio object's buffer
-      //Does not work
-      /*const audioLoader = new THREE.AudioLoader();
-      audioLoader.load( 'SonicRingSound.ogg', function( buffer ) {
-	      sound.setBuffer( buffer );
-	      sound.setLoop( true );
-	      sound.setVolume( 0.5 );
-	      sound.play();
-      });*/
-
+    //define a camera to look into the 3D world
+		const camera = new THREE.PerspectiveCamera( 75, window.innerWidth / window.innerHeight, 0.1, 1000 );
 
       //we are going to place our 3D meshes at the center of the world's coordinate system, 
       //  so we move the camera so that it can see them 
-      camera.position.z = 5;
+    camera.position.z = 5;
 
       //tell Three.js to render our geometry using the GPU
-      const renderer = new THREE.WebGLRenderer();
+    const renderer = new THREE.WebGLRenderer();
     
       //make the canvas take up the entire browser window
-			renderer.setSize( window.innerWidth, window.innerHeight );
-			document.body.appendChild( renderer.domElement );
+		renderer.setSize( window.innerWidth, window.innerHeight );
+		document.body.appendChild( renderer.domElement );
 
+      //once the renderer and camera are created, 
+      // we can define how the camera can be moved
+    const controls = new OrbitControls(camera, renderer.domElement);
 
-      //a 3D object consists of:
-        // some POINTS (called "geometry") that define the object
-        // a MATERIAL that defines how the faces of the geometry are rendered
-			const geometry = new THREE.TorusGeometry(0.6, .1, 32, 64); //r, tube, rSeg, tubeSeg
+      //Ring Meshes
+    const r = 0.6;
+    const tube = 0.1;
+    const rSeg = 32;
+    const tubeSeg = 64;
+    var start_pos = -5;
+    const geometry = new THREE.TorusGeometry(r, tube, rSeg, tubeSeg);
+
+    const numOfRings = 5;
+    for(let i = 0; i < numOfRings; ++i) {
       const material = new THREE.MeshStandardMaterial();
-      
-      material.wireframe = false; //makes it easier to see how the mesh is made up of TRIANGLES
-      //material.color = Color(0xb2ad3c);
-      //material.emissive = Color(0xffffff);
 
-      //you put these together by making a MESH
       const torus = new THREE.Mesh( geometry, material );
-      torus.position.x = 0;
-      torus.position.y = 0;
-      
-      
-      //and you then add the mesh to the scene, so that it gets rendered (in the animate function)
+      torus.name = "ring" + i;
       scene.add( torus );
-      
-      const light1 = new THREE.PointLight( 0xfff93d, 1, 100 );
-      light1.position.set( 0, 0, 25 );
-      scene.add( light1 );
+
+      torus.position.set(start_pos, 0, 0);
+      start_pos += 2.5;
+      //console.log(torus)
+    }
+    
+      //Lights
+    const light1 = new THREE.PointLight( 0xfff93d, 1, 100 );
+    light1.position.set( 0, 0, 25 );
+    scene.add( light1 );
+
+    const ambientLight = new THREE.AmbientLight( 0x202020 ); // soft white light
+    scene.add( ambientLight );
       
 
-      function animate() {
-        //synchronize the animation with the refresh rate of your monitor, usual 60 fps
-				requestAnimationFrame( animate ); 
+    function animate() {
+			requestAnimationFrame( animate ); 
 
-        //rotate the cube by a little bit each frame
-        //torus.rotation.x += 0.01;
-        torus.rotation.y += 0.02;
-        
+      scene.traverse(function(torus) {
+        if (torus.name = "ring") {
+          torus.rotation.y += 0.02;
+          torus.rotation.x += 0.02;
+        }
+      });
         //tells the GPU to render your meshes to the canvas fromm the perspective of the camera
-				renderer.render( scene, camera );
-			}
-
-
-      animate();
+			renderer.render( scene, camera );
+    };
+    
+    animate();
 
       
       
       
-		</script>
+	</script>
 	</body>
 </html>

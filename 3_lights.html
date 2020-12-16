@@ -97,18 +97,18 @@
 
     const light2 = new THREE.PointLight( 0x00ff00 );
     light2.position.set( 50, 0, 0 );
-    //scene.add( light2 );
+    scene.add( light2 );
 
     const light3 = new THREE.PointLight( 0xff0000 );
     light3.position.set( -50, 0, 0 );
-    //scene.add( light3 );
+    scene.add( light3 );
 
     const white_pointlight = new THREE.PointLight( 0xffffff );
     white_pointlight.position.set( 0, 0, 0 );
     //scene.add( white_pointlight );
 
     const ambientLight = new THREE.AmbientLight( 0x202020 ); // soft white light
-    //scene.add( ambientLight );
+    scene.add( ambientLight );
 
 
     //let light_dx = 0.1;
