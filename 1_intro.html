@@ -7,7 +7,7 @@
 	<body>
 
     
-    <div id="info">This is a Ring</div>
+    <div id="info">Sonic Ring Build</div>
 
 
   <script type="module">
@@ -22,7 +22,7 @@
 
       //we are going to place our 3D meshes at the center of the world's coordinate system, 
       //  so we move the camera so that it can see them 
-    camera.position.z = 5;
+    camera.position.z = 7;
 
       //tell Three.js to render our geometry using the GPU
     const renderer = new THREE.WebGLRenderer();
@@ -48,32 +48,6 @@
 	    mouse.y = - ( event.clientY / window.innerHeight ) * 2 + 1;
 
     }
-
-
-    //Adding Ring SFX
-    let music_playing = false;
-	  function music(){
-	    if (!music_playing){
-		   music_playing = true;
-		    // adding an audio listerner to the camera
-	      const listener = new THREE.AudioListener();
-	      camera.add( listener );
-
-	      // create a global audio source
-	      const sound = new THREE.Audio( listener );
-
-	      // load a sound and set it as the Audio object's buffer
-	      const audioLoader = new THREE.AudioLoader();
-	      audioLoader.load( 'SonicRingSound.mp3', function( buffer ) {
-		      sound.setBuffer( buffer );
-		      sound.setLoop( false );
-		      sound.setVolume( 0.5 );
-		      sound.play();
-	      });
-	    }
-    }
-  
-	  document.getElementsByTagName("canvas")[0].onclick = music
 
 
       //Ring Meshes
@@ -122,6 +96,32 @@
 
       intersects[ i ].object.rotation.y += 0.5;
     }
+
+    //Adding Ring SFX
+    let music_playing = false;
+	  function music(){
+	      if (!music_playing){
+		      music_playing = true;
+		        // adding an audio listerner to the camera
+	        const listener = new THREE.AudioListener();
+	        camera.add( listener );
+
+	          // create a global audio source
+	        const sound = new THREE.Audio( listener );
+
+	          // load a sound and set it as the Audio object's buffer
+	        const audioLoader = new THREE.AudioLoader();
+	        audioLoader.load( 'SonicRingSound.mp3', function( buffer ) {
+		        sound.setBuffer( buffer );
+		        sound.setLoop( false );
+		        sound.setVolume( 0.5 );
+		        sound.play();
+	        });
+	      }
+      }
+  
+	    document.getElementsByTagName("canvas")[0].onclick = music
+
       //Rendering Scene and Defualt Animation
     requestAnimationFrame( render ); 
       
