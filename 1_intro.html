@@ -14,14 +14,11 @@
     import * as THREE from './js/build/three.module.js'
     import { OrbitControls } from './js/examples/jsm/controls/OrbitControls.js' 
 
-    //first create a "world" or "scene" to hold the data you will render to the screen (where the data is 3D geometry)      
+    //"world" or "scene"   
     const scene = new THREE.Scene();
       
-    //define a camera to look into the 3D world
+    //Camera
 		const camera = new THREE.PerspectiveCamera( 75, window.innerWidth / window.innerHeight, 0.1, 1000 );
-
-      //we are going to place our 3D meshes at the center of the world's coordinate system, 
-      //  so we move the camera so that it can see them 
     camera.position.z = 7;
 
       //tell Three.js to render our geometry using the GPU
@@ -31,9 +28,10 @@
 		renderer.setSize( window.innerWidth, window.innerHeight );
 		document.body.appendChild( renderer.domElement );
 
-      //once the renderer and camera are created, 
-      // we can define how the camera can be moved
+      //camera movement
     const controls = new OrbitControls(camera, renderer.domElement);
+
+
 
     //Ray Casting
     const raycaster = new THREE.Raycaster();
@@ -43,14 +41,12 @@
 
 	    // calculate mouse position in normalized device coordinates
 	    // (-1 to +1) for both components
-
 	    mouse.x = ( event.clientX / window.innerWidth ) * 2 - 1;
 	    mouse.y = - ( event.clientY / window.innerHeight ) * 2 + 1;
-
     }
 
 
-      //Ring Meshes
+    //Ring Meshes
     const r = 0.6;
     const tube = 0.1;
     const rSeg = 32;
@@ -60,7 +56,11 @@
 
     const numOfRings = 5;
     for(let i = 0; i < numOfRings; ++i) {
-      const material = new THREE.MeshStandardMaterial();
+      const material = new THREE.MeshMatcapMaterial();
+
+      const matcapTexture = new THREE.TextureLoader().load("JG_Gold.png");
+      material.matcap = matcapTexture
+      
 
       const torus = new THREE.Mesh( geometry, material );
       torus.name = "ring";
@@ -75,7 +75,7 @@
     
 
       //Lights
-    const light1 = new THREE.PointLight( 0xfff93d, 1, 100 ); //yellow light
+    const light1 = new THREE.PointLight( 0xffffff, 1, 100 ); //white light
     light1.position.set( 0, 0, 25 );
     scene.add( light1 );
 
@@ -86,22 +86,23 @@
     //Rendering and Animation
     function render() {
 
-    // update the picking ray with the camera and mouse position
-    raycaster.setFromCamera( mouse, camera );
+      // update the picking ray with the camera and mouse position
+      raycaster.setFromCamera( mouse, camera );
 
-    // calculate objects intersecting the picking ray
-    const intersects = raycaster.intersectObjects( scene.children );
+      // calculate objects intersecting the picking ray
+      const intersects = raycaster.intersectObjects( scene.children );
 
-    for ( let i = 0; i < intersects.length; i ++ ) {
+      for ( let i = 0; i < intersects.length; i ++ ) {
 
-      intersects[ i ].object.rotation.y += 0.5;
-    }
+        intersects[ i ].object.rotation.y += 0.5;
+      }
 
-    //Adding Ring SFX
-    let music_playing = false;
-	  function music(){
+      //Adding Ring SFX
+      let music_playing = false;
+	    function music(){
 	      if (!music_playing){
-		      music_playing = true;
+          music_playing = true;
+          
 		        // adding an audio listerner to the camera
 	        const listener = new THREE.AudioListener();
 	        camera.add( listener );
@@ -116,11 +117,11 @@
 		        sound.setLoop( false );
 		        sound.setVolume( 0.5 );
 		        sound.play();
-	        });
-	      }
-      }
+	          });
+	        }
+        }
   
-	    document.getElementsByTagName("canvas")[0].onclick = music
+	      document.getElementsByTagName("canvas")[0].onclick = music
 
       //Rendering Scene and Defualt Animation
     requestAnimationFrame( render ); 
