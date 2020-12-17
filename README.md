@@ -1,3 +1,3 @@
-# Three JS Assignment
+# Three JS Final Project
  
-![Assignment Image](Screenshot of Final.png)
+![Assignment Image](Images/ScreenshotOfFinal.png)
